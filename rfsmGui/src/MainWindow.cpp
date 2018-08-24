@@ -230,10 +230,16 @@ MainWindow::MainWindow(QCommandLineParser *prsr, QWidget *parent) :
     // is done in MainWindow::showEvent()
 
     rfsm.runPeriod = settings.value("run-period", 500).toInt();
+
+    spin_timer_ = new QTimer();
+    connect(spin_timer_, SIGNAL(timeout()), this, SLOT(spinTimer()));
+    spin_timer_->start(10);
+    event_sub_  = nh_.subscribe( "/events",  1, &MainWindow::eventsCB,  this);
 }
 
 MainWindow::~MainWindow()
 {
+    spin_timer_->stop();
     delete ui;
 }
 
@@ -1742,3 +1748,15 @@ void MainWindow::switchMachineMode(MachineMode mode) {
 void MainWindow::saveSetting() {
     settings.setValue("run-period", rfsm.runPeriod);
 }
+
+void MainWindow::spinTimer()
+{
+    ros::spinOnce();
+}
+
+void MainWindow::eventsCB(const std_msgs::String::ConstPtr& msg)
+{   
+    ui->rosEvents->setText(QString::fromStdString(msg->data));
+    rfsm.sendEvent(msg->data);
+}
+

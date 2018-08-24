@@ -25,7 +25,8 @@
 #include <QGraphicsLineItem>
 #include <QSettings>
 #include <StateGraphEditor.h>
-
+#include <ros/ros.h>
+#include <std_msgs/String.h>
 namespace Ui {
 class MainWindow;
 }
@@ -160,6 +161,9 @@ private slots:
     void onPostStep(const std::string prevState, const std::string currentState);
     void onFsmStopped();
 
+    void spinTimer();
+
+
 public:    
     Ui::MainWindow *ui;
     std::map<std::string, QGVNode*> sceneNodeMap;
@@ -185,6 +189,12 @@ private:
     bool isNew;
     bool canModify;
     bool saveAs;
+
+    // Needed tp add a basic ROS interface
+    QTimer *spin_timer_;
+    void eventsCB(const std_msgs::String::ConstPtr& msg);
+    ros::NodeHandle nh_;
+    ros::Subscriber event_sub_;
 
 };
 

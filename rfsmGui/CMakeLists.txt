@@ -8,7 +8,10 @@ cmake_minimum_required(VERSION 2.8.9)
 set(PROJECTNAME rfsmGui)
 project(${PROJECTNAME})
 
-
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+)
 if(ENABLE_RFSMGUI)
     include(GNUInstallDirs)
 

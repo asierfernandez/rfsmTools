@@ -14,7 +14,9 @@ endif()
 include_directories(../QGVCore
                     ../../librFSM/include
                     ./sourceEditor
-                     ${YARP_INCLUDE_DIRS})
+                     ${YARP_INCLUDE_DIRS}
+                     include
+                     ${catkin_INCLUDE_DIRS})
 
 set(rfsmgui_qt_SRCS main.cpp
                     MainWindow.cpp
@@ -62,7 +64,7 @@ add_executable(${PROJECTNAME} WIN32 ${rfsmgui_qt_SRCS}
 
 
 #find_package(Qt5PrintSupport REQUIRED)
-target_link_libraries(${PROJECTNAME} qgvcore Qt5::Widgets Qt5::Gui rFSM ${YARP_LIBRARIES})
+target_link_libraries(${PROJECTNAME} qgvcore Qt5::Widgets Qt5::Gui rFSM ${YARP_LIBRARIES} ${catkin_LIBRARIES})
 
 
 #if(WIN32 AND CMAKE_VERSION VERSION_LESS 2.8.11)

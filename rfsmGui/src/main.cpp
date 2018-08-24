@@ -47,6 +47,8 @@ int main(int argc, char *argv[])
     // Process the actual command line arguments given by the user
     parser.process(app);
 
+    ros::init( argc,argv, "rfsmGui" );
+
     MainWindow w(&parser);
     w.show();
     return app.exec();
