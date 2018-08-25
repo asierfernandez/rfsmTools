@@ -190,6 +190,7 @@ MainWindow::MainWindow(QCommandLineParser *prsr, QWidget *parent) :
     connect(ui->actionLine, SIGNAL(triggered()),this,SLOT(onLayoutLine()));
     connect(ui->actionExport_scene, SIGNAL(triggered()),this,SLOT(onExportScene()));
     connect(ui->actionSourceCode, SIGNAL(triggered()),this,SLOT(onSourceCode()));
+    connect(ui->groupBoxROS, SIGNAL(clicked()),this,SLOT(onROSEvents()));
 
     // rfsm signals
     connect(&rfsm, SIGNAL(updateEventQueue(const std::vector<std::string>)),this, SLOT(onUpdateEventQueue(const std::vector<std::string>)));
@@ -229,12 +230,7 @@ MainWindow::MainWindow(QCommandLineParser *prsr, QWidget *parent) :
     // loading and running state machine (if set via command line param)
     // is done in MainWindow::showEvent()
 
-    rfsm.runPeriod = settings.value("run-period", 500).toInt();
-
-    spin_timer_ = new QTimer();
-    connect(spin_timer_, SIGNAL(timeout()), this, SLOT(spinTimer()));
-    spin_timer_->start(10);
-    event_sub_  = nh_.subscribe( "/events",  1, &MainWindow::eventsCB,  this);
+    rfsm.runPeriod = settings.value("run-period", 500).toInt();    
 }
 
 MainWindow::~MainWindow()
@@ -1749,6 +1745,20 @@ void MainWindow::saveSetting() {
     settings.setValue("run-period", rfsm.runPeriod);
 }
 
+void MainWindow::onROSEvents()
+{
+    char **argv = 0;
+    int argc=0;
+    
+    ros::init( argc,argv, "rfsmGui",0 );
+
+    ros::NodeHandle nh_;
+    event_sub_  = nh_.subscribe( "/events",  1, &MainWindow::eventsCB,  this);
+    
+    spin_timer_ = new QTimer();
+    connect(spin_timer_, SIGNAL(timeout()), this, SLOT(spinTimer()));
+    spin_timer_->start(10);
+}
 void MainWindow::spinTimer()
 {
     ros::spinOnce();

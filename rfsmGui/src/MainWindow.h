@@ -162,6 +162,7 @@ private slots:
     void onFsmStopped();
 
     void spinTimer();
+    void onROSEvents();
 
 
 public:    
@@ -192,8 +193,10 @@ private:
 
     // Needed tp add a basic ROS interface
     QTimer *spin_timer_;
+
+private:
     void eventsCB(const std_msgs::String::ConstPtr& msg);
-    ros::NodeHandle nh_;
+    //ros::NodeHandle nh_;
     ros::Subscriber event_sub_;
 
 };
